@@ -1,0 +1,79 @@
+name: POI melden
+description: Neuen Kanu-POI für FlowTrail vorschlagen (Wehr, Schleuse, Gefahr, Rastplatz, …)
+title: "[POI] "
+labels: ["poi-meldung"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke für deine Meldung! Nach Prüfung wird der POI in `pois.geojson` aufgenommen
+        und erscheint in der [FlowTrail](https://github.com/3ddruck12/FlowTrail)-App nach dem nächsten Update.
+
+        Du kannst POIs auch direkt in der App melden (Menü → POI melden).
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: POI-Typ
+      options:
+        - Wehr
+        - Schleuse
+        - Gefahrenstelle
+        - Rastplatz
+        - Einstieg
+        - Ausstieg
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      placeholder: z. B. Wehr Hattingen
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Beschreibung
+      description: Hinweise für Paddler (Umsetzen, Pegel, Parkplatz, …)
+      placeholder: z. B. Nur bei Niedrigwasser passierbar, links umsetzen
+    validations:
+      required: true
+
+  - type: input
+    id: river
+    attributes:
+      label: Fluss (optional)
+      placeholder: z. B. Ruhr
+
+  - type: input
+    id: lat
+    attributes:
+      label: Breitengrad (lat)
+      placeholder: "51.6574"
+    validations:
+      required: true
+
+  - type: input
+    id: lng
+    attributes:
+      label: Längengrad (lng)
+      placeholder: "6.7358"
+    validations:
+      required: true
+
+  - type: input
+    id: osm
+    attributes:
+      label: OpenStreetMap-Link (optional)
+      placeholder: https://www.openstreetmap.org/...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Bestätigung
+      options:
+        - label: Ich habe den POI vor Ort geprüft oder aus verlässlicher Quelle übernommen.
+          required: true

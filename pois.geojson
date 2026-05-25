@@ -1,0 +1,122 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "FlowTrail Community POIs",
+    "description": "Starter-Datensatz für Kanu-POIs in NRW. Meldungen via GitHub Issues.",
+    "version": "2026-05-24"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [6.7358, 51.6574]
+      },
+      "properties": {
+        "name": "Lippe Einsetzstelle Wesel",
+        "description": "Gängiger Einstieg an der Lippe bei Wesel. Parkplatz in der Nähe prüfen.",
+        "type": "Einstieg",
+        "river": "Lippe",
+        "source": "community"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [6.7621, 51.6712]
+      },
+      "properties": {
+        "name": "Lippe Rastplatz Auesee",
+        "description": "Rastmöglichkeit am Ufer, schattig.",
+        "type": "Rastplatz",
+        "river": "Lippe",
+        "source": "community"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.0134, 51.4378]
+      },
+      "properties": {
+        "name": "Ruhr Wehr Hattingen",
+        "description": "Wehrstrecke — nur bei ausreichendem Pegel befahren. Vor Ort Umsetzen.",
+        "type": "Wehr",
+        "river": "Ruhr",
+        "source": "community"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.1856, 51.4923]
+      },
+      "properties": {
+        "name": "Ruhr Einstieg Witten",
+        "description": "Beliebter Einstieg an der Ruhr bei Witten-Bommern.",
+        "type": "Einstieg",
+        "river": "Ruhr",
+        "source": "community"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [7.8945, 51.6789]
+      },
+      "properties": {
+        "name": "Möhne Rastplatz Heve-Ufer",
+        "description": "Rastplatz am Möhnesee-Zufluss, windgeschützt.",
+        "type": "Rastplatz",
+        "river": "Möhne",
+        "source": "community"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.0123, 51.8234]
+      },
+      "properties": {
+        "name": "Ahmer Feldbach Gefahrenstelle",
+        "description": "Engstelle mit Baumhindernis bei Niedrigwasser — rechts halten.",
+        "type": "Gefahrenstelle",
+        "river": "Ahmer Feldbach",
+        "source": "community"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [6.4512, 51.2012]
+      },
+      "properties": {
+        "name": "Erft Schleuse Bedburg",
+        "description": "Schleuse am Erft-Kanal — Wartezeiten möglich, Schlüssel erfragen.",
+        "type": "Schleuse",
+        "river": "Erft",
+        "source": "community"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [6.7823, 51.9345]
+      },
+      "properties": {
+        "name": "Ems Ausstieg Lingen",
+        "description": "Ausstieg am Ems-Ufer, nahe Innenstadt.",
+        "type": "Ausstieg",
+        "river": "Ems",
+        "source": "community"
+      }
+    }
+  ]
+}

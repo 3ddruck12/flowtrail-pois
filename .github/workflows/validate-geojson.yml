@@ -1,0 +1,50 @@
+name: validate-geojson
+
+on:
+  push:
+    paths:
+      - "pois.geojson"
+      - "manifest.json"
+  pull_request:
+    paths:
+      - "pois.geojson"
+      - "manifest.json"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate manifest.json
+        run: |
+          python -c "
+          import json, sys
+          m = json.load(open('manifest.json'))
+          for key in ('version', 'updatedAt', 'label', 'dataUrl'):
+              assert key in m, f'missing {key}'
+          print('manifest.json OK:', m['version'])
+          "
+
+      - name: Validate pois.geojson
+        run: |
+          python -c "
+          import json
+          data = json.load(open('pois.geojson'))
+          assert data.get('type') == 'FeatureCollection', 'must be FeatureCollection'
+          features = data.get('features', [])
+          assert len(features) > 0, 'need at least one feature'
+          for i, f in enumerate(features):
+              g = f.get('geometry', {})
+              assert g.get('type') == 'Point', f'feature {i}: not Point'
+              coords = g.get('coordinates', [])
+              assert len(coords) >= 2, f'feature {i}: bad coordinates'
+              p = f.get('properties', {})
+              assert p.get('name'), f'feature {i}: missing name'
+          print(f'pois.geojson OK: {len(features)} features')
+          "
