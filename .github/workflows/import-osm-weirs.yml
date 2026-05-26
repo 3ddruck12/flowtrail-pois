@@ -1,0 +1,72 @@
+name: import-osm-weirs
+
+on:
+  workflow_dispatch:
+    inputs:
+      region:
+        description: "Region (de = alle Bundesländer)"
+        required: true
+        default: de
+        type: choice
+        options:
+          - de
+          - nw
+          - by
+          - bw
+          - he
+          - ni
+          - rp
+          - sh
+          - sn
+          - th
+          - bb
+          - be
+          - hb
+          - hh
+          - mv
+          - sl
+          - st
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Import OSM weirs
+        run: python scripts/import_osm_weirs.py --region ${{ inputs.region }}
+
+      - name: Validate output
+        run: |
+          python -c "
+          import json
+          data = json.load(open('pois.geojson'))
+          features = data['features']
+          osm = [f for f in features if f.get('properties', {}).get('source') == 'osm']
+          community = [f for f in features if f.get('properties', {}).get('source') != 'osm']
+          assert len(features) > 0
+          assert len(osm) > 0, 'expected OSM weirs'
+          for f in features:
+              assert f['geometry']['type'] == 'Point'
+              assert f['properties']['name']
+          print(f'OK: {len(community)} community + {len(osm)} osm = {len(features)} total')
+          "
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pois.geojson manifest.json
+          git diff --staged --quiet && echo "Keine Änderungen" && exit 0
+          git commit -m "chore: OSM-Wehre import (${{ inputs.region }}, $(date -u +%Y-%m-%d))"
+          git push

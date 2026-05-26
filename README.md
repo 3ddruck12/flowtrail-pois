@@ -48,6 +48,29 @@ POI_ISSUE_REPO=3ddruck12/flowtrail-pois
 
 `Einstieg` · `Ausstieg` · `Rastplatz` · `Wehr` · `Schleuse` · `Gefahrenstelle`
 
+## OSM-Wehre importieren (Maintainer)
+
+Wehre werden aus [OpenStreetMap](https://www.openstreetmap.org/) via Overpass API geladen.
+Linien-Geometrien (Ways) werden automatisch in Mittelpunkte umgewandelt.
+
+**GitHub Actions:** [Actions → import-osm-weirs → Run workflow](https://github.com/3ddruck12/flowtrail-pois/actions/workflows/import-osm-weirs.yml)
+
+| Option | Bedeutung |
+|--------|-----------|
+| `de` | Alle 16 Bundesländer (empfohlen für Vollimport) |
+| `nw`, `by`, … | Einzelnes Bundesland |
+
+**Lokal:**
+
+```bash
+pip install -r scripts/requirements.txt
+python scripts/import_osm_weirs.py --region nw --dry-run
+python scripts/import_osm_weirs.py --region de
+```
+
+Merge-Regel: `source: community` bleibt erhalten, `source: osm` wird bei jedem Import ersetzt.
+
 ## Lizenz
 
-POI-Daten: Community-Beiträge. App: siehe [FlowTrail/LICENSE](https://github.com/3ddruck12/FlowTrail/blob/main/LICENSE).
+POI-Daten: Community-Beiträge + Wehre aus OpenStreetMap (© OSM contributors, [ODbL](https://opendatacommons.org/licenses/odbl/)).
+App: siehe [FlowTrail/LICENSE](https://github.com/3ddruck12/FlowTrail/blob/main/LICENSE).
