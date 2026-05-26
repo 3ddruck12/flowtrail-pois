@@ -272,7 +272,7 @@ def main() -> None:
         print("Dry-run — keine Dateien geschrieben.")
         return
 
-    version = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    version = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H%M")
     write_outputs(community, osm_features, version)
 
 
