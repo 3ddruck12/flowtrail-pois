@@ -3,7 +3,7 @@
   "metadata": {
     "name": "FlowTrail Community POIs",
     "description": "Starter-Datensatz für Kanu-POIs in NRW. Meldungen via GitHub Issues.",
-    "version": "2026-05-24"
+    "version": "2026-05-26"
   },
   "features": [
     {
@@ -31,20 +31,6 @@
         "description": "Rastmöglichkeit am Ufer, schattig.",
         "type": "Rastplatz",
         "river": "Lippe",
-        "source": "community"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [7.0134, 51.4378]
-      },
-      "properties": {
-        "name": "Ruhr Wehr Hattingen",
-        "description": "Wehrstrecke — nur bei ausreichendem Pegel befahren. Vor Ort Umsetzen.",
-        "type": "Wehr",
-        "river": "Ruhr",
         "source": "community"
       }
     },

@@ -1,6 +1,6 @@
 {
-  "version": "2026-05-24",
-  "updatedAt": "2026-05-24T12:00:00Z",
+  "version": "2026-05-26",
+  "updatedAt": "2026-05-26T12:00:00Z",
   "label": "FlowTrail Community POIs (NRW Starter)",
   "dataUrl": "https://raw.githubusercontent.com/3ddruck12/flowtrail-pois/main/pois.geojson"
 }
