@@ -1,6 +1,6 @@
 {
-  "version": "2026-05-26T1629",
-  "updatedAt": "2026-05-26T16:29:22Z",
+  "version": "test",
+  "updatedAt": "2026-05-27T15:02:17Z",
   "label": "FlowTrail POIs (7 Community + 16500 OSM-Wehre)",
   "dataUrl": "https://raw.githubusercontent.com/3ddruck12/flowtrail-pois/main/pois.geojson"
 }

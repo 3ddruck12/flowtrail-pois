@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Importiert Wehre aus OpenStreetMap (Overpass) und merged sie in pois.geojson."""
+"""Importiert Wehre aus OpenStreetMap (Overpass) → osm-weirs.geojson + merge."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 import time
 from datetime import datetime, timezone
@@ -15,12 +16,11 @@ import requests
 from shapely.geometry import LineString, Point, Polygon
 
 ROOT = Path(__file__).resolve().parent.parent
-POIS_PATH = ROOT / "pois.geojson"
-MANIFEST_PATH = ROOT / "manifest.json"
+OSM_PATH = ROOT / "osm-weirs.geojson"
+MERGE_SCRIPT = ROOT / "scripts" / "merge_pois.py"
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 USER_AGENT = "FlowTrail-POI-Import/1.0 (github.com/3ddruck12/flowtrail-pois)"
 
-# ISO3166-2 Codes — einzeln abfragen, um Overpass-Timeouts zu vermeiden
 BUNDESLAENDER: dict[str, str] = {
     "sh": 'area["ISO3166-2"="DE-SH"][admin_level=4]',
     "hh": 'area["ISO3166-2"="DE-HH"][admin_level=4]',
@@ -164,17 +164,6 @@ def element_to_feature(element: dict[str, Any]) -> dict[str, Any] | None:
     }
 
 
-def load_community_features(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    data = json.loads(path.read_text(encoding="utf-8"))
-    features = data.get("features", [])
-    community = [
-        feature
-        for feature in features
-        if feature.get("properties", {}).get("source") != "osm"
-    ]
-    return data, community
-
-
 def fetch_weirs_for_regions(region_codes: list[str]) -> list[dict[str, Any]]:
     by_osm_id: dict[str, dict[str, Any]] = {}
 
@@ -211,45 +200,31 @@ def resolve_regions(region: str) -> list[str]:
     return [region]
 
 
-def write_outputs(
-    community: list[dict[str, Any]],
-    osm_features: list[dict[str, Any]],
-    version: str,
-) -> None:
-    now = datetime.now(timezone.utc)
+def write_osm_file(osm_features: list[dict[str, Any]], version: str) -> None:
     osm_features.sort(key=lambda f: (f["properties"].get("river", ""), f["properties"]["name"]))
-
-    pois = {
+    payload = {
         "type": "FeatureCollection",
         "metadata": {
-            "name": "FlowTrail Community POIs",
-            "description": (
-                "Community-POIs und OSM-Wehre für Kanufahrer in Deutschland. "
-                "Wehre: © OpenStreetMap contributors (ODbL)."
-            ),
+            "name": "FlowTrail OSM Weirs",
+            "description": "Automatisch aus OpenStreetMap importierte Wehre (© OSM ODbL).",
             "version": version,
         },
-        "features": community + osm_features,
+        "features": osm_features,
     }
+    OSM_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"Geschrieben: {len(osm_features)} OSM-Wehre → {OSM_PATH.name}")
 
-    manifest = {
-        "version": version,
-        "updatedAt": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "label": f"FlowTrail POIs ({len(community)} Community + {len(osm_features)} OSM-Wehre)",
-        "dataUrl": "https://raw.githubusercontent.com/3ddruck12/flowtrail-pois/main/pois.geojson",
-    }
 
-    POIS_PATH.write_text(json.dumps(pois, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
-    print(
-        f"Geschrieben: {len(community)} Community-POIs + {len(osm_features)} OSM-Wehre "
-        f"= {len(pois['features'])} gesamt (Version {version})"
+def run_merge(version: str) -> None:
+    subprocess.run(
+        [sys.executable, str(MERGE_SCRIPT), "--version", version],
+        check=True,
+        cwd=ROOT,
     )
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="OSM-Wehre in pois.geojson importieren")
+    parser = argparse.ArgumentParser(description="OSM-Wehre importieren und mergen")
     parser.add_argument(
         "--region",
         default="de",
@@ -263,7 +238,6 @@ def main() -> None:
     args = parser.parse_args()
 
     region_codes = resolve_regions(args.region)
-    _, community = load_community_features(POIS_PATH)
     osm_features = fetch_weirs_for_regions(region_codes)
 
     print(f"Gesamt: {len(osm_features)} eindeutige OSM-Wehre")
@@ -273,7 +247,8 @@ def main() -> None:
         return
 
     version = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H%M")
-    write_outputs(community, osm_features, version)
+    write_osm_file(osm_features, version)
+    run_merge(version)
 
 
 if __name__ == "__main__":

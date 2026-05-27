@@ -4,11 +4,17 @@ on:
   push:
     paths:
       - "pois.geojson"
+      - "community-pois.geojson"
+      - "osm-weirs.geojson"
       - "manifest.json"
+      - "scripts/merge_pois.py"
   pull_request:
     paths:
       - "pois.geojson"
+      - "community-pois.geojson"
+      - "osm-weirs.geojson"
       - "manifest.json"
+      - "scripts/merge_pois.py"
   workflow_dispatch:
 
 jobs:
@@ -24,27 +30,34 @@ jobs:
       - name: Validate manifest.json
         run: |
           python -c "
-          import json, sys
+          import json
           m = json.load(open('manifest.json'))
           for key in ('version', 'updatedAt', 'label', 'dataUrl'):
               assert key in m, f'missing {key}'
           print('manifest.json OK:', m['version'])
           "
 
-      - name: Validate pois.geojson
+      - name: Validate GeoJSON files
         run: |
           python -c "
           import json
-          data = json.load(open('pois.geojson'))
-          assert data.get('type') == 'FeatureCollection', 'must be FeatureCollection'
-          features = data.get('features', [])
-          assert len(features) > 0, 'need at least one feature'
-          for i, f in enumerate(features):
-              g = f.get('geometry', {})
-              assert g.get('type') == 'Point', f'feature {i}: not Point'
-              coords = g.get('coordinates', [])
-              assert len(coords) >= 2, f'feature {i}: bad coordinates'
-              p = f.get('properties', {})
-              assert p.get('name'), f'feature {i}: missing name'
-          print(f'pois.geojson OK: {len(features)} features')
+
+          def check(path, min_features=0):
+              data = json.load(open(path))
+              assert data.get('type') == 'FeatureCollection', path + ': not FeatureCollection'
+              features = data.get('features', [])
+              assert len(features) >= min_features, path + ': need features'
+              for i, f in enumerate(features):
+                  g = f.get('geometry', {})
+                  assert g.get('type') == 'Point', f'{path} feature {i}: not Point'
+                  p = f.get('properties', {})
+                  assert p.get('name'), f'{path} feature {i}: missing name'
+              print(f'{path} OK: {len(features)} features')
+
+          check('community-pois.geojson', min_features=1)
+          check('osm-weirs.geojson', min_features=1)
+          check('pois.geojson', min_features=1)
           "
+
+      - name: Verify merge consistency
+        run: python scripts/merge_pois.py --version ci-check

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowTrail POI-Editor</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="toolbar">
+    <h1>FlowTrail POI-Editor</h1>
+    <div class="toolbar-actions">
+      <label class="toggle">
+        <input type="checkbox" id="osmLayerToggle" />
+        OSM-Wehre anzeigen
+      </label>
+      <button type="button" id="btnAddMode" class="btn secondary">POI setzen</button>
+      <button type="button" id="btnExport" class="btn primary">Community exportieren</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <div id="map"></div>
+    <aside id="sidebar" class="sidebar hidden">
+      <h2 id="sidebarTitle">POI bearbeiten</h2>
+      <form id="poiForm">
+        <input type="hidden" id="poiIndex" value="-1" />
+        <label>Name
+          <input type="text" id="poiName" required />
+        </label>
+        <label>Typ
+          <select id="poiType">
+            <option>Einstieg</option>
+            <option>Ausstieg</option>
+            <option>Rastplatz</option>
+            <option>Wehr</option>
+            <option>Schleuse</option>
+            <option>Gefahrenstelle</option>
+          </select>
+        </label>
+        <label>Fluss (optional)
+          <input type="text" id="poiRiver" />
+        </label>
+        <label>Beschreibung
+          <textarea id="poiDescription" rows="4"></textarea>
+        </label>
+        <label id="replacesRow" class="hidden">Ersetzt OSM-ID
+          <input type="text" id="poiReplacesOsm" readonly />
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Speichern</button>
+          <button type="button" id="btnDelete" class="btn danger">Löschen</button>
+          <button type="button" id="btnClose" class="btn secondary">Schließen</button>
+        </div>
+      </form>
+    </aside>
+  </main>
+
+  <footer class="status" id="statusBar">Lade …</footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

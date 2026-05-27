@@ -66,7 +66,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pois.geojson manifest.json
+          git add community-pois.geojson osm-weirs.geojson pois.geojson manifest.json
           git diff --staged --quiet && echo "Keine Änderungen" && exit 0
           git commit -m "chore: OSM-Wehre import (${{ inputs.region }}, $(date -u +%Y-%m-%d))"
           git push
